@@ -18,7 +18,7 @@ def run_game(delay=None):
 
     table = board.Board()
     running = True
-    player = 'B'
+    player = -1
 
     positions = None  # valid positions for the human player
     last_position = None  # position of red dot
@@ -29,7 +29,7 @@ def run_game(delay=None):
                 running = False
 
             if not table.is_final():
-                if player == "B":
+                if player == -1:
                     # The turn of the human player
                     positions = table.generate_possible_moves(player, None, False)
                     if len(positions) is not None:
@@ -39,7 +39,7 @@ def run_game(delay=None):
                             pos_y //= 100
                             if (pos_y, pos_x) in positions:
                                 table.set_move(pos_y, pos_x, player)
-                                player = 'W'
+                                player = 1
                                 last_position = (pos_y, pos_x)
                                 positions.clear()
                                 if delay is not None and delay != 0:
@@ -50,13 +50,13 @@ def run_game(delay=None):
                                     pygame.time.wait(delay)
                 else:
                     # The turn of the computer
-                    last_position = table.random_strategy()
+                    # last_position = table.random_strategy()
                     # last_position = table.local_maximization_strategy()
                     # last_position = table.maximization_strategy()
                     # last_position = table.mini_max_strategy()
                     # last_position = table.alpha_beta_strategy()
                     # last_position = table.negamax_strategy()
-                    player = "B"
+                    player = -1
             else:
                 running = False
 

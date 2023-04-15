@@ -4,8 +4,8 @@ import random
 import copy
 import numpy as np
 
-white_circle = pygame.image.load(os.path.join('C:\\Users\\octav\\Othello\\assets', 'white.png'))
-black_circle = pygame.image.load(os.path.join('C:\\Users\\octav\\Othello\\assets', 'black.png'))
+white_circle = pygame.image.load(os.path.join('assets', 'white.png'))
+black_circle = pygame.image.load(os.path.join('assets', 'black.png'))
 
 
 # Draw table
@@ -31,23 +31,23 @@ def draw_possible_moves(surface, positions):
 class Board:
     def __init__(self):
         self.board = np.array([
-            ['-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', 'W', 'B', '-', '-', '-'],
-            ['-', '-', '-', 'B', 'W', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-'],
-            ['-', '-', '-', '-', '-', '-', '-', '-'],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 1, -1, 0, 0, 0],
+            [0, 0, 0, -1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0],
         ])
 
     # Draw pieces
     def draw(self, surface, last_position=None):
         for i in range(8):
             for j in range(8):
-                if self.board[i, j] == 'B':
+                if self.board[i, j] == -1:
                     surface.blit(black_circle, (j * 100 + 12.5, i * 100 + 12.5))
-                elif self.board[i, j] == 'W':
+                elif self.board[i, j] == 1:
                     surface.blit(white_circle, (j * 100 + 12.5, i * 100 + 12.5))
         if last_position is not None:
             i, j = last_position
@@ -59,9 +59,9 @@ class Board:
         if self.final_state(self.board):
             for i in range(8):
                 for j in range(8):
-                    if self.board[i, j] == "W":
+                    if self.board[i, j] == 1:
                         no_of_whites += 1
-                    elif self.board[i, j] == "B":
+                    elif self.board[i, j] == -1:
                         no_of_blacks += 1
 
             if no_of_whites > no_of_blacks:
@@ -71,25 +71,25 @@ class Board:
             elif no_of_whites == no_of_blacks:
                 print("Tie!")
 
-            print(f"Final score: \nB = {no_of_blacks} - W = {no_of_whites}")
+            print(f"Final score: \nBlack = {no_of_blacks} - White = {no_of_whites}")
             return True
         else:
             # The game is done before the table is complete
             whites, blacks = 0, 0
             for i in range(8):
                 for j in range(8):
-                    if self.board[i, j] == "W":
+                    if self.board[i, j] == 1:
                         whites += 1
-                    elif self.board[i, j] == "B":
+                    elif self.board[i, j] == -1:
                         blacks += 1
 
             if whites + blacks == abs(whites - blacks):
                 if whites != 0:
                     print("The bot won!")
-                    print(f"Final score: \nB = {blacks} - W = {whites}")
+                    print(f"Final score: \nBlack = {blacks} - White = {whites}")
                 else:
                     print("You won!")
-                    print(f"Final score: \nB = {blacks} - W = {whites}")
+                    print(f"Final score: \nBlack = {blacks} - White = {whites}")
 
                 return True
 
@@ -110,7 +110,7 @@ class Board:
             elements.append(table[pos_x, i])
 
         for i in range(pos_y + 1, 8):
-            if table[pos_x, i] == '-':
+            if table[pos_x, i] == 0:
                 flag = True
                 if i - 1 > pos_y:
                     for j in range(i - 1, pos_y, -1):
@@ -127,7 +127,7 @@ class Board:
             elements.append(table[pos_x, i])
 
         for i in range(pos_y - 1, -1, -1):
-            if table[pos_x, i] == '-':
+            if table[pos_x, i] == 0:
                 flag = True
                 if i + 1 < pos_y:
                     for j in range(i + 1, pos_y):
@@ -155,7 +155,7 @@ class Board:
             elements.append(table[i, pos_y])
 
         for i in range(pos_x + 1, 8):
-            if table[i, pos_y] == '-':
+            if table[i, pos_y] == 0:
                 flag = True
                 if i - 1 > pos_x:
                     for j in range(i - 1, pos_x, -1):
@@ -172,7 +172,7 @@ class Board:
             elements.append(table[i, pos_y])
 
         for i in range(pos_x - 1, -1, -1):
-            if table[i, pos_y] == '-':
+            if table[i, pos_y] == 0:
                 flag = True
                 if i + 1 < pos_x:
                     for j in range(i + 1, pos_x):
@@ -205,7 +205,7 @@ class Board:
 
         i, j = pos_x, pos_y
         while i < 8 and j < 8:
-            if table[i, j] == '-':
+            if table[i, j] == 0:
                 flag = True
                 if i - 1 > pos_x:
                     row = i - 1
@@ -232,7 +232,7 @@ class Board:
 
         i, j = pos_x, pos_y
         while i > -1 and j > -1:
-            if table[i, j] == '-':
+            if table[i, j] == 0:
                 flag = True
                 if i + 1 < pos_x:
                     row = i + 1
@@ -271,7 +271,7 @@ class Board:
 
         i, j = pos_x, pos_y
         while i < 8 and j > -1:
-            if table[i, j] == '-':
+            if table[i, j] == 0:
                 flag = True
                 if i - 1 > pos_x:
                     row = i - 1
@@ -298,7 +298,7 @@ class Board:
 
         i, j = pos_x, pos_y
         while i > -1 and j < 8:
-            if table[i, j] == '-':
+            if table[i, j] == 0:
                 flag = True
                 if i + 1 < pos_x:
                     row = i + 1
@@ -320,10 +320,10 @@ class Board:
     # Return positions of possible places where you can place a piece
     def generate_possible_moves(self, color, current_state, strategy):
         all_moves = list()
-        if color == 'B':
-            opposite_color = 'W'
+        if color == -1:
+            opposite_color = 1
         else:
-            opposite_color = 'B'
+            opposite_color = -1
 
         if strategy is True:
             value = current_state
@@ -360,51 +360,51 @@ class Board:
     def change_color(self, pos_x, pos_y, color):
         directions = dict()
         if pos_x + 1 < 8:
-            if self.board[pos_x + 1][pos_y] != color and self.board[pos_x + 1][pos_y] != "-":
+            if self.board[pos_x + 1][pos_y] != color and self.board[pos_x + 1][pos_y] != 0:
                 flag = True
                 for i in range(pos_x + 2, 8):
-                    if self.board[i][pos_y] == '-':
+                    if self.board[i][pos_y] == 0:
                         flag = False
                     if self.board[i][pos_y] == color and flag is True:
                         directions['vertical_jos'] = (i, pos_y)
                         break
 
         if pos_x - 1 > -1:
-            if self.board[pos_x - 1][pos_y] != color and self.board[pos_x - 1][pos_y] != "-":
+            if self.board[pos_x - 1][pos_y] != color and self.board[pos_x - 1][pos_y] != 0:
                 flag = True
                 for i in range(pos_x - 2, -1, -1):
-                    if self.board[i][pos_y] == '-':
+                    if self.board[i][pos_y] == 0:
                         flag = False
                     if self.board[i][pos_y] == color and flag is True:
                         directions['vertical_sus'] = (i, pos_y)
                         break
 
         if pos_y + 1 < 8:
-            if self.board[pos_x][pos_y + 1] != color and self.board[pos_x][pos_y + 1] != "-":
+            if self.board[pos_x][pos_y + 1] != color and self.board[pos_x][pos_y + 1] != 0:
                 flag = True
                 for i in range(pos_y + 2, 8):
-                    if self.board[pos_x][i] == "-":
+                    if self.board[pos_x][i] == 0:
                         flag = False
                     if self.board[pos_x][i] == color and flag is True:
                         directions['orizontal_dreapta'] = (pos_x, i)
                         break
 
         if pos_y - 1 > -1:
-            if self.board[pos_x][pos_y - 1] != color and self.board[pos_x][pos_y - 1] != "-":
+            if self.board[pos_x][pos_y - 1] != color and self.board[pos_x][pos_y - 1] != 0:
                 flag = True
                 for i in range(pos_y - 2, -1, -1):
-                    if self.board[pos_x][i] == "-":
+                    if self.board[pos_x][i] == 0:
                         flag = False
                     if self.board[pos_x][i] == color and flag is True:
                         directions['orizontal_stanga'] = (pos_x, i)
                         break
 
         if pos_x + 1 < 8 and pos_y + 1 < 8:
-            if self.board[pos_x + 1][pos_y + 1] != color and self.board[pos_x + 1][pos_y + 1] != "-":
+            if self.board[pos_x + 1][pos_y + 1] != color and self.board[pos_x + 1][pos_y + 1] != 0:
                 flag = True
                 i, j = pos_x + 2, pos_y + 2
                 while i < 8 and j < 8:
-                    if self.board[i][j] == "-":
+                    if self.board[i][j] == 0:
                         flag = False
                     if self.board[i][j] == color and flag is True:
                         directions['dp_descendent'] = (i, j)
@@ -413,11 +413,11 @@ class Board:
                     j += 1
 
         if pos_x - 1 > -1 and pos_y - 1 > -1:
-            if self.board[pos_x - 1][pos_y - 1] != color and self.board[pos_x - 1][pos_y - 1] != "-":
+            if self.board[pos_x - 1][pos_y - 1] != color and self.board[pos_x - 1][pos_y - 1] != 0:
                 flag = True
                 i, j = pos_x - 2, pos_y - 2
                 while i > -1 and j > - 1:
-                    if self.board[i][j] == "-":
+                    if self.board[i][j] == 0:
                         flag = False
                     if self.board[i][j] == color and flag is True:
                         directions['dp_ascendent'] = (i, j)
@@ -426,11 +426,11 @@ class Board:
                     j -= 1
 
         if pos_x + 1 < 8 and pos_y - 1 > -1:
-            if self.board[pos_x + 1][pos_y - 1] != color and self.board[pos_x + 1][pos_y - 1] != "-":
+            if self.board[pos_x + 1][pos_y - 1] != color and self.board[pos_x + 1][pos_y - 1] != 0:
                 flag = True
                 i, j = pos_x + 2, pos_y - 2
                 while i < 8 and j > -1:
-                    if self.board[i][j] == "-":
+                    if self.board[i][j] == 0:
                         flag = False
                     if self.board[i][j] == color and flag is True:
                         directions['ds_descendent'] = (i, j)
@@ -439,11 +439,11 @@ class Board:
                     j -= 1
 
         if pos_x - 1 > -1 and pos_y + 1 < 8:
-            if self.board[pos_x - 1][pos_y + 1] != color and self.board[pos_x - 1][pos_y + 1] != "-":
+            if self.board[pos_x - 1][pos_y + 1] != color and self.board[pos_x - 1][pos_y + 1] != 0:
                 flag = True
                 i, j = pos_x - 2, pos_y + 2
                 while i > -1 and j < 8:
-                    if self.board[i][j] == "-":
+                    if self.board[i][j] == 0:
                         flag = False
                     if self.board[i][j] == color and flag is True:
                         directions['ds_ascendent'] = (i, j)
@@ -566,7 +566,7 @@ class Board:
             return True
 
     def best_move_random_pick(self):
-        possible_moves = list(self.generate_possible_moves("W", self.board, True))
+        possible_moves = list(self.generate_possible_moves(1, self.board, True))
         temp_moves = []
         # 1.
         for move in possible_moves:
@@ -606,19 +606,21 @@ class Board:
 
     def random_strategy(self):
         move = list(self.best_move_random_pick())
+        if move == None:
+            return None
         x = move[0]
         y = move[1]
-        self.set_move(x, y, "W")
+        self.set_move(x, y, 1)
         return x, y
 
     # ---------------- LOCAL MAXIMIZATION -------------------------------------
 
     # Returns the number of white and black pieces
     def count_pieces(self):
-        return np.count_nonzero(self.board == 'W'), np.count_nonzero(self.board == 'B')
+        return np.count_nonzero(self.board == 1), np.count_nonzero(self.board == 1)
 
     # Takes decisions for computer, every move has a certain reward
-    def local_maximization_strategy(self, current_player='W'):
+    def local_maximization_strategy(self, current_player=1):
         possible_moves = list(self.generate_possible_moves(current_player, self.board, True))
         rewards = list()
         backup_board = copy.deepcopy(self.board)
@@ -627,7 +629,7 @@ class Board:
             self.set_move(position[0], position[1], current_player)
             no_of_whites, no_of_blacks = self.count_pieces()
 
-            if current_player == 'W':
+            if current_player == 1:
                 rewards.append(no_of_whites)
             else:
                 rewards.append(no_of_blacks)
@@ -643,7 +645,7 @@ class Board:
 
     # ---------------- GENERAL MAXIMIZATION -------------------------------
 
-    def maximization_strategy(self, current_player='W'):
+    def maximization_strategy(self, current_player=1):
         backup_board1 = copy.deepcopy(self.board)
         possible_moves1 = list(self.generate_possible_moves(current_player, self.board, True))
         rewards = dict()
@@ -653,10 +655,10 @@ class Board:
             self.set_move(p1[0], p1[1], current_player)
             backup_board2 = copy.deepcopy(self.board)
 
-            if current_player == 'W':
-                next_player = 'B'
+            if current_player == 1:
+                next_player = 0
             else:
-                next_player = 'W'
+                next_player = 1
 
             possible_moves2 = list(self.generate_possible_moves(next_player, self.board, True))
 
@@ -666,7 +668,7 @@ class Board:
 
                 key = str(i) + ':' + str(j)
 
-                if current_player == 'W':
+                if current_player == 1:
                     rewards.update({key: no_of_whites})
                 else:
                     rewards.update({key: no_of_blacks})
@@ -706,51 +708,51 @@ class Board:
     def create_state(current_state, pos_x, pos_y, color):
         directions = dict()
         if pos_x + 1 < 8:
-            if current_state[pos_x + 1][pos_y] != color and current_state[pos_x + 1][pos_y] != "-":
+            if current_state[pos_x + 1][pos_y] != color and current_state[pos_x + 1][pos_y] != 0:
                 flag = True
                 for i in range(pos_x + 2, 8):
-                    if current_state[i][pos_y] == '-':
+                    if current_state[i][pos_y] == 0:
                         flag = False
                     if current_state[i][pos_y] == color and flag is True:
                         directions['vertical_jos'] = (i, pos_y)
                         break
 
         if pos_x - 1 > -1:
-            if current_state[pos_x - 1][pos_y] != color and current_state[pos_x - 1][pos_y] != "-":
+            if current_state[pos_x - 1][pos_y] != color and current_state[pos_x - 1][pos_y] != 0:
                 flag = True
                 for i in range(pos_x - 2, -1, -1):
-                    if current_state[i][pos_y] == '-':
+                    if current_state[i][pos_y] == 0:
                         flag = False
                     if current_state[i][pos_y] == color and flag is True:
                         directions['vertical_sus'] = (i, pos_y)
                         break
 
         if pos_y + 1 < 8:
-            if current_state[pos_x][pos_y + 1] != color and current_state[pos_x][pos_y + 1] != "-":
+            if current_state[pos_x][pos_y + 1] != color and current_state[pos_x][pos_y + 1] != 0:
                 flag = True
                 for i in range(pos_y + 2, 8):
-                    if current_state[pos_x][i] == "-":
+                    if current_state[pos_x][i] == 0:
                         flag = False
                     if current_state[pos_x][i] == color and flag is True:
                         directions['orizontal_dreapta'] = (pos_x, i)
                         break
 
         if pos_y - 1 > -1:
-            if current_state[pos_x][pos_y - 1] != color and current_state[pos_x][pos_y - 1] != "-":
+            if current_state[pos_x][pos_y - 1] != color and current_state[pos_x][pos_y - 1] != 0:
                 flag = True
                 for i in range(pos_y - 2, -1, -1):
-                    if current_state[pos_x][i] == "-":
+                    if current_state[pos_x][i] == 0:
                         flag = False
                     if current_state[pos_x][i] == color and flag is True:
                         directions['orizontal_stanga'] = (pos_x, i)
                         break
 
         if pos_x + 1 < 8 and pos_y + 1 < 8:
-            if current_state[pos_x + 1][pos_y + 1] != color and current_state[pos_x + 1][pos_y + 1] != "-":
+            if current_state[pos_x + 1][pos_y + 1] != color and current_state[pos_x + 1][pos_y + 1] != 0:
                 flag = True
                 i, j = pos_x + 2, pos_y + 2
                 while i < 8 and j < 8:
-                    if current_state[i][j] == "-":
+                    if current_state[i][j] == 0:
                         flag = False
                     if current_state[i][j] == color and flag is True:
                         directions['dp_descendent'] = (i, j)
@@ -759,11 +761,11 @@ class Board:
                     j += 1
 
         if pos_x - 1 > -1 and pos_y - 1 > -1:
-            if current_state[pos_x - 1][pos_y - 1] != color and current_state[pos_x - 1][pos_y - 1] != "-":
+            if current_state[pos_x - 1][pos_y - 1] != color and current_state[pos_x - 1][pos_y - 1] != 0:
                 flag = True
                 i, j = pos_x - 2, pos_y - 2
                 while i > -1 and j > - 1:
-                    if current_state[i][j] == "-":
+                    if current_state[i][j] == 0:
                         flag = False
                     if current_state[i][j] == color and flag is True:
                         directions['dp_ascendent'] = (i, j)
@@ -772,11 +774,11 @@ class Board:
                     j -= 1
 
         if pos_x + 1 < 8 and pos_y - 1 > -1:
-            if current_state[pos_x + 1][pos_y - 1] != color and current_state[pos_x + 1][pos_y - 1] != "-":
+            if current_state[pos_x + 1][pos_y - 1] != color and current_state[pos_x + 1][pos_y - 1] != 0:
                 flag = True
                 i, j = pos_x + 2, pos_y - 2
                 while i < 8 and j > -1:
-                    if current_state[i][j] == "-":
+                    if current_state[i][j] == 0:
                         flag = False
                     if current_state[i][j] == color and flag is True:
                         directions['ds_descendent'] = (i, j)
@@ -785,11 +787,11 @@ class Board:
                     j -= 1
 
         if pos_x - 1 > -1 and pos_y + 1 < 8:
-            if current_state[pos_x - 1][pos_y + 1] != color and current_state[pos_x - 1][pos_y + 1] != "-":
+            if current_state[pos_x - 1][pos_y + 1] != color and current_state[pos_x - 1][pos_y + 1] != 0:
                 flag = True
                 i, j = pos_x - 2, pos_y + 2
                 while i > -1 and j < 8:
-                    if current_state[i][j] == "-":
+                    if current_state[i][j] == 0:
                         flag = False
                     if current_state[i][j] == color and flag is True:
                         directions['ds_ascendent'] = (i, j)
@@ -865,7 +867,7 @@ class Board:
         empty_slot = False
         for i in range(8):
             for j in range(8):
-                if current_state[i][j] == '-':
+                if current_state[i][j] == 0:
                     empty_slot = True
 
         if empty_slot:
@@ -878,9 +880,9 @@ class Board:
         whites, blacks = 0, 0
         for i in range(8):
             for j in range(8):
-                if current_state[i][j] == "W":
+                if current_state[i][j] == 1:
                     whites += 1
-                elif current_state[i][j] == "B":
+                elif current_state[i][j] == -1:
                     blacks += 1
         return whites - blacks
 
@@ -891,10 +893,10 @@ class Board:
 
         if maximized_level is True:
             value = -float('Inf')
-            possible_states = self.generate_possible_moves("W", current_state, True)
+            possible_states = self.generate_possible_moves(1, current_state, True)
             for i in possible_states:
                 copy_of_current_state = copy.deepcopy(current_state)
-                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], "W")
+                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], 1)
                 _, new_val = self.mini_max(new_state, False, current_depth - 1, best_one)
                 if new_val > value:
                     value = new_val
@@ -902,10 +904,10 @@ class Board:
             return best_one, value
         else:
             value = float('Inf')
-            possible_states = self.generate_possible_moves("B", current_state, True)
+            possible_states = self.generate_possible_moves(-1, current_state, True)
             for i in possible_states:
                 copy_of_current_state = copy.deepcopy(current_state)
-                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], "B")
+                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], -1)
                 _, new_val = self.mini_max(new_state, True, current_depth - 1, best_one)
                 if new_val < value:
                     value = new_val
@@ -918,8 +920,8 @@ class Board:
         if best_state is None:
             for i in range(8):
                 for j in range(8):
-                    if self.board[i, j] == "-":
-                        self.board[i, j] = "W"
+                    if self.board[i, j] == 0:
+                        self.board[i, j] = 1
                         break
         else:
             last_position = self.compare_states(best_state)
@@ -932,8 +934,8 @@ class Board:
         last_position = None
         for i in range(8):
             for j in range(8):
-                if self.board[i, j] == '-':
-                    if state[i, j] == 'W' or state[i, j] == 'B':
+                if self.board[i, j] == 0:
+                    if state[i, j] == 1 or state[i, j] == -1:
                         last_position = (i, j)
         return last_position
 
@@ -943,10 +945,10 @@ class Board:
 
         if maximized_level is True:
             value = -np.Inf
-            possible_states = self.generate_possible_moves('W', current_state, True)
+            possible_states = self.generate_possible_moves(1, current_state, True)
             for i in possible_states:
                 copy_of_current_state = copy.deepcopy(current_state)
-                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], 'W')
+                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], 1)
                 _, new_val = self.alpha_beta(new_state, False, current_depth - 1, alpha, beta, best_one)
                 if new_val > value:
                     value = new_val
@@ -958,10 +960,10 @@ class Board:
             return best_one, value
         else:
             value = np.Inf
-            possible_states = self.generate_possible_moves('B', current_state, True)
+            possible_states = self.generate_possible_moves(-1, current_state, True)
             for i in possible_states:
                 copy_of_current_state = copy.deepcopy(current_state)
-                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], 'B')
+                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], -1)
                 _, new_val = self.alpha_beta(new_state, True, current_depth - 1, alpha, beta, best_one)
                 if new_val < value:
                     value = new_val
@@ -978,8 +980,8 @@ class Board:
         if best_state is None:
             for i in range(8):
                 for j in range(8):
-                    if self.board[i, j] == "-":
-                        self.board[i, j] = "W"
+                    if self.board[i, j] == 0:
+                        self.board[i, j] = 1
                         break
         else:
             last_position = self.compare_states(best_state)
@@ -990,25 +992,25 @@ class Board:
     def negamax(self, current_state, current_depth, color, best_one):
         if current_depth == 0 or self.final_state(current_state) is True:
             return None, self.heuristic_function(current_state)
-        if color == "W":
+        if color == 1:
             value = -np.Inf
-            possible_states = self.generate_possible_moves("W", current_state, True)
+            possible_states = self.generate_possible_moves(1, current_state, True)
             for i in possible_states:
                 copy_of_current_state = copy.deepcopy(current_state)
-                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], "W")
-                _, new_val = self.negamax(new_state, current_depth - 1, "B", best_one)
+                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], 1)
+                _, new_val = self.negamax(new_state, current_depth - 1, -1, best_one)
                 if -new_val > value:
                     value = new_val
                     best_one = new_state
 
             return best_one, value
-        elif color == "B":
+        elif color == -1:
             value = -np.Inf
-            possible_states = self.generate_possible_moves("B", current_state, True)
+            possible_states = self.generate_possible_moves(-1, current_state, True)
             for i in possible_states:
                 copy_of_current_state = copy.deepcopy(current_state)
-                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], "B")
-                _, new_val = self.negamax(new_state, current_depth - 1, "W", best_one)
+                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], -1)
+                _, new_val = self.negamax(new_state, current_depth - 1, 1, best_one)
                 if -new_val > value:
                     value = new_val
                     best_one = new_state
@@ -1016,12 +1018,12 @@ class Board:
             return best_one, value
 
     def negamax_strategy(self):
-        best_state, value = self.negamax(self.board, 1, "W", None)
+        best_state, value = self.negamax(self.board, 1, 1, None)
         if best_state is None:
             for i in range(8):
                 for j in range(8):
-                    if self.board[i, j] == "-":
-                        self.board[i, j] = "W"
+                    if self.board[i, j] == 0:
+                        self.board[i, j] = 1
                         break
         else:
             last_position = self.compare_states(best_state)

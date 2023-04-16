@@ -8,28 +8,37 @@ white_circle = pygame.image.load(os.path.join(
     "AI-Reversi-Btl2", 'assets', 'white.png'))
 black_circle = pygame.image.load(os.path.join(
     'AI-Reversi-Btl2', 'assets', 'black.png'))
+white_circle = pygame.transform.scale(white_circle, (60, 60))
+black_circle = pygame.transform.scale(black_circle, (60, 60))
 
 
 # Draw table
 def draw_table(surface):
-    col = 0
+    #col = 0
+    col = 100
     for i in range(8):
-        row = 0
+        #row = 0
+        row = 100
         for j in range(8):
             if (i + j) % 2 == 0:
-                pygame.draw.rect(surface, (199, 123, 215),
-                                 (row, col, 100, 100))
+                # pygame.draw.rect(surface, (199, 123, 215),
+                #                  (row, col, 100, 100))
+                pygame.draw.rect(surface, (199, 123, 215), (row, col, 75, 75))
             else:
-                pygame.draw.rect(surface, (177, 80, 196), (row, col, 100, 100))
-            row += 100
-        col += 100
+        #         pygame.draw.rect(surface, (177, 80, 196), (row, col, 100, 100))
+        #     row += 100
+        # col += 100
+                pygame.draw.rect(surface, (177, 80, 196), (row, col, 75, 75))
+            row += 75
+        col += 75
 
 
 # Draw circles for possible moves
 def draw_possible_moves(surface, positions):
     for item in positions:
-        pygame.draw.circle(surface, (178, 184, 180),
-                           (item[1] * 100 + 49, item[0] * 100 + 49), 38, 1)
+        # pygame.draw.circle(surface, (178, 184, 180),
+        #                    (item[1] * 100 + 49, item[0] * 100 + 49), 38, 1)
+        pygame.draw.circle(surface, (178, 184, 180), (item[1] * 75 + 138, item[0] * 75 + 138), 30, 1)
 
 
 class Board:
@@ -50,15 +59,19 @@ class Board:
         for i in range(8):
             for j in range(8):
                 if self.board[i, j] == -1:
-                    surface.blit(
-                        black_circle, (j * 100 + 12.5, i * 100 + 12.5))
+                    # surface.blit(
+                    #     black_circle, (j * 100 + 12.5, i * 100 + 12.5))
+                    surface.blit(black_circle, (j * 75 + 8 + 100, i * 75 + 6 + 100))
                 elif self.board[i, j] == 1:
-                    surface.blit(
-                        white_circle, (j * 100 + 12.5, i * 100 + 12.5))
+                    # surface.blit(
+                    #     white_circle, (j * 100 + 12.5, i * 100 + 12.5))
+                    surface.blit(white_circle, (j * 75 + 7.5 + 100, i * 75 + 7.5 + 100))
         if last_position is not None:
             i, j = last_position
-            pygame.draw.circle(surface, (255, 0, 0),
-                               (j * 100 + 50, i * 100 + 50), 4)
+            # pygame.draw.circle(surface, (255, 0, 0),
+            #                    (j * 100 + 50, i * 100 + 50), 4)
+            pygame.draw.circle(surface, (255, 0, 0), (j * 75 + 138, i * 75 + 138), 4)
+
 
     # Print score and check if your state is final
     def is_final(self):

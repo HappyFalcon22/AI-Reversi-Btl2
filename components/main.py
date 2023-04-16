@@ -54,8 +54,12 @@ def run_game():
                     if len(positions) != 0:
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             pos_x, pos_y = pygame.mouse.get_pos()
-                            pos_x //= 100
-                            pos_y //= 100
+                            # pos_x //= 100
+                            # pos_y //= 100
+                            pos_x -= 100
+                            pos_x //= 75
+                            pos_y -= 100
+                            pos_y //= 75
                             if (pos_y, pos_x) in positions:
                                 table.set_move(pos_y, pos_x, player)
                                 player = 1

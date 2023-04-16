@@ -11,6 +11,8 @@ def run_game():
 
     surface = pygame.display.set_mode((800, 800))
     pygame.display.set_caption('Othello')
+    pygame.font.init()
+    font = pygame.font.SysFont('calibri', 28)
 
     table = board.Board()
     running = True
@@ -21,10 +23,6 @@ def run_game():
 
     player_time = 60
     AI_time = 60
-    # start_time_player = time.time() - (60 - player_time)     #player go first, so first mark start time
-    # end_time_player = start_time_player + 60
-    # #start_time_AI = time.time() - (60 - AI_time)
-    # end_time_AI = 0
 
     start_time_player = None
     end_time_player = None
@@ -54,8 +52,6 @@ def run_game():
                     if len(positions) != 0:
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             pos_x, pos_y = pygame.mouse.get_pos()
-                            # pos_x //= 100
-                            # pos_y //= 100
                             pos_x -= 100
                             pos_x //= 75
                             pos_y -= 100
@@ -73,7 +69,10 @@ def run_game():
                     last_position = table.alpha_beta_strategy()
                     player = -1
                     if last_position is None:
+                        # AI has no legal move, pass to player
                         continue
+                #DEBUGGING
+                print(table.board)
             else:
                 running = False
 
@@ -83,22 +82,28 @@ def run_game():
 
             if len(positions) > 0:
                 board.draw_possible_moves(surface, positions)
-
-            pygame.display.update()
         
         if timer_running == -1:
             player_time = end_time_player - time.time()
-            print("player:",player_time)
+            infor1 = font.render("Your time: {:.1f}".format(player_time), True, (0, 0, 0))
+            infor2 = font.render("   AI time: {:.1f}".format(AI_time), True, (0, 0, 0))
+            surface.blit(infor1,(300,35))
+            surface.blit(infor2,(300,75))
         elif timer_running == 1:
             AI_time = end_time_AI - time.time()
-            print("AI", AI_time)
+            infor1 = font.render("Your time: {:.1f}".format(player_time), True, (0, 0, 0))
+            infor2 = font.render("   AI time: {:.1f}".format(AI_time), True, (0, 0, 0))
+            surface.blit(infor1,(300,35))
+            surface.blit(infor2,(300,75))
         
         if player_time <= 0:
-            print("Player time out!!\n AI won.")
+            print("Player time out!!\nAI won.")
             running = False
         elif AI_time <= 0:
-            print("AI time out!!\n You won.")
+            print("AI time out!!\nYou won.")
             running = False
+
+        pygame.display.update()
 
 if __name__ == '__main__':
     run_game()

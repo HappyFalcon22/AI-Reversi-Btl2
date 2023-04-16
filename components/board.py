@@ -14,20 +14,13 @@ black_circle = pygame.transform.scale(black_circle, (60, 60))
 
 # Draw table
 def draw_table(surface):
-    #col = 0
     col = 100
     for i in range(8):
-        #row = 0
         row = 100
         for j in range(8):
             if (i + j) % 2 == 0:
-                # pygame.draw.rect(surface, (199, 123, 215),
-                #                  (row, col, 100, 100))
                 pygame.draw.rect(surface, (199, 123, 215), (row, col, 75, 75))
             else:
-        #         pygame.draw.rect(surface, (177, 80, 196), (row, col, 100, 100))
-        #     row += 100
-        # col += 100
                 pygame.draw.rect(surface, (177, 80, 196), (row, col, 75, 75))
             row += 75
         col += 75
@@ -36,8 +29,6 @@ def draw_table(surface):
 # Draw circles for possible moves
 def draw_possible_moves(surface, positions):
     for item in positions:
-        # pygame.draw.circle(surface, (178, 184, 180),
-        #                    (item[1] * 100 + 49, item[0] * 100 + 49), 38, 1)
         pygame.draw.circle(surface, (178, 184, 180), (item[1] * 75 + 138, item[0] * 75 + 138), 30, 1)
 
 
@@ -59,17 +50,11 @@ class Board:
         for i in range(8):
             for j in range(8):
                 if self.board[i, j] == -1:
-                    # surface.blit(
-                    #     black_circle, (j * 100 + 12.5, i * 100 + 12.5))
                     surface.blit(black_circle, (j * 75 + 8 + 100, i * 75 + 6 + 100))
                 elif self.board[i, j] == 1:
-                    # surface.blit(
-                    #     white_circle, (j * 100 + 12.5, i * 100 + 12.5))
                     surface.blit(white_circle, (j * 75 + 7.5 + 100, i * 75 + 7.5 + 100))
         if last_position is not None:
             i, j = last_position
-            # pygame.draw.circle(surface, (255, 0, 0),
-            #                    (j * 100 + 50, i * 100 + 50), 4)
             pygame.draw.circle(surface, (255, 0, 0), (j * 75 + 138, i * 75 + 138), 4)
 
 
@@ -631,94 +616,6 @@ class Board:
         y = move[1]
         self.set_move(x, y, 1)
         return x, y
-
-    # # ---------------- LOCAL MAXIMIZATION -------------------------------------
-
-    # # Returns the number of white and black pieces
-    # def count_pieces(self):
-    #     return np.count_nonzero(self.board == 1), np.count_nonzero(self.board == 1)
-
-    # # Takes decisions for computer, every move has a certain reward
-    # def local_maximization_strategy(self, current_player=1):
-    #     possible_moves = list(self.generate_possible_moves(current_player, self.board, True))
-    #     rewards = list()
-    #     backup_board = copy.deepcopy(self.board)
-
-    #     for position in possible_moves:
-    #         self.set_move(position[0], position[1], current_player)
-    #         no_of_whites, no_of_blacks = self.count_pieces()
-
-    #         if current_player == 1:
-    #             rewards.append(no_of_whites)
-    #         else:
-    #             rewards.append(no_of_blacks)
-
-    #         self.board = copy.deepcopy(backup_board)
-
-    #     if len(rewards) > 0:
-    #         best_move = possible_moves[np.argmax(rewards)]
-    #         self.set_move(best_move[0], best_move[1], current_player)
-    #         return best_move
-
-    #     return None
-
-    # # ---------------- GENERAL MAXIMIZATION -------------------------------
-
-    # def maximization_strategy(self, current_player=1):
-    #     backup_board1 = copy.deepcopy(self.board)
-    #     possible_moves1 = list(self.generate_possible_moves(current_player, self.board, True))
-    #     rewards = dict()
-    #     history = dict()
-
-    #     for i, p1 in enumerate(possible_moves1):
-    #         self.set_move(p1[0], p1[1], current_player)
-    #         backup_board2 = copy.deepcopy(self.board)
-
-    #         if current_player == 1:
-    #             next_player = 0
-    #         else:
-    #             next_player = 1
-
-    #         possible_moves2 = list(self.generate_possible_moves(next_player, self.board, True))
-
-    #         for j, p2 in enumerate(possible_moves2):
-    #             self.set_move(p2[0], p2[1], current_player)
-    #             no_of_whites, no_of_blacks = self.count_pieces()
-
-    #             key = str(i) + ':' + str(j)
-
-    #             if current_player == 1:
-    #                 rewards.update({key: no_of_whites})
-    #             else:
-    #                 rewards.update({key: no_of_blacks})
-
-    #             history.update({key: (p1, p2)})
-
-    #             self.board = copy.deepcopy(backup_board2)
-
-    #         self.board = copy.deepcopy(backup_board1)
-
-    #     final_decisions = list()
-    #     max_reward = -1
-
-    #     if len(rewards) > 0 and len(history) > 0:
-    #         for r in rewards:
-    #             v = rewards.get(r)
-    #             if v > max_reward:
-    #                 final_decisions = [[r, v]]
-    #                 max_reward = v
-    #             elif v == max_reward:
-    #                 final_decisions.append([r, v])
-
-    #         np.random.shuffle(final_decisions)
-
-    #         decision = final_decisions[0]
-    #         best_move = history.get(decision[0])[0]
-
-    #         self.set_move(best_move[0], best_move[1], current_player)
-    #         return best_move
-
-    #     return None
 
     # ---------------------- MINI MAX -------------------------------------------
 

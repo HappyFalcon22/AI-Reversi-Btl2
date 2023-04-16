@@ -7,6 +7,7 @@ Team: Băcăoanu Adriana-Bianca, Chiperi Andrei, Coța Ștefan-Octavian, Pătra�
 import pygame
 import os
 import board
+import time
 
 
 def run_game(delay=None):
@@ -35,8 +36,10 @@ def run_game(delay=None):
                     if len(positions) is not None:
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             pos_x, pos_y = pygame.mouse.get_pos()
-                            pos_x //= 100
-                            pos_y //= 100
+                            pos_x -= 100
+                            pos_x //= 75
+                            pos_y -= 100
+                            pos_y //= 75
                             if (pos_y, pos_x) in positions:
                                 table.set_move(pos_y, pos_x, player)
                                 player = 1
@@ -48,15 +51,18 @@ def run_game(delay=None):
                                     table.draw(surface, last_position)
                                     pygame.display.flip()
                                     pygame.time.wait(delay)
+                    else:
+                        time.sleep(0.1)
                 else:
                     # The turn of the computer
                     # last_position = table.random_strategy()
                     # last_position = table.local_maximization_strategy()
                     # last_position = table.maximization_strategy()
                     # last_position = table.mini_max_strategy()
-                    # last_position = table.alpha_beta_strategy()
+                    last_position = table.alpha_beta_strategy()
+                    if last_position == None:
                     # last_position = table.negamax_strategy()
-                    player = -1
+                        player = -1
             else:
                 running = False
 

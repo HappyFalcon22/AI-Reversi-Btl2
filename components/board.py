@@ -4,8 +4,10 @@ import random
 import copy
 import numpy as np
 
-white_circle = pygame.image.load(os.path.join('assets', 'white.png'))
-black_circle = pygame.image.load(os.path.join('assets', 'black.png'))
+white_circle = pygame.image.load(os.path.join(
+    "AI-Reversi-Btl2", 'assets', 'white.png'))
+black_circle = pygame.image.load(os.path.join(
+    'AI-Reversi-Btl2', 'assets', 'black.png'))
 
 
 # Draw table
@@ -15,9 +17,10 @@ def draw_table(surface):
         row = 0
         for j in range(8):
             if (i + j) % 2 == 0:
-                pygame.draw.rect(surface, (14, 92, 23), (row, col, 100, 100))
+                pygame.draw.rect(surface, (199, 123, 215),
+                                 (row, col, 100, 100))
             else:
-                pygame.draw.rect(surface, (8, 163, 27), (row, col, 100, 100))
+                pygame.draw.rect(surface, (177, 80, 196), (row, col, 100, 100))
             row += 100
         col += 100
 
@@ -25,7 +28,8 @@ def draw_table(surface):
 # Draw circles for possible moves
 def draw_possible_moves(surface, positions):
     for item in positions:
-        pygame.draw.circle(surface, (178, 184, 180), (item[1] * 100 + 49, item[0] * 100 + 49), 38, 1)
+        pygame.draw.circle(surface, (178, 184, 180),
+                           (item[1] * 100 + 49, item[0] * 100 + 49), 38, 1)
 
 
 class Board:
@@ -46,53 +50,52 @@ class Board:
         for i in range(8):
             for j in range(8):
                 if self.board[i, j] == -1:
-                    surface.blit(black_circle, (j * 100 + 12.5, i * 100 + 12.5))
+                    surface.blit(
+                        black_circle, (j * 100 + 12.5, i * 100 + 12.5))
                 elif self.board[i, j] == 1:
-                    surface.blit(white_circle, (j * 100 + 12.5, i * 100 + 12.5))
+                    surface.blit(
+                        white_circle, (j * 100 + 12.5, i * 100 + 12.5))
         if last_position is not None:
             i, j = last_position
-            pygame.draw.circle(surface, (255, 0, 0), (j * 100 + 50, i * 100 + 50), 4)
+            pygame.draw.circle(surface, (255, 0, 0),
+                               (j * 100 + 50, i * 100 + 50), 4)
 
     # Print score and check if your state is final
     def is_final(self):
         no_of_whites, no_of_blacks = 0, 0
+        for i in range(8):
+            for j in range(8):
+                if self.board[i, j] == 1:
+                    no_of_whites += 1
+                elif self.board[i, j] == -1:
+                    no_of_blacks += 1
         if self.final_state(self.board):
-            for i in range(8):
-                for j in range(8):
-                    if self.board[i, j] == 1:
-                        no_of_whites += 1
-                    elif self.board[i, j] == -1:
-                        no_of_blacks += 1
-
             if no_of_whites > no_of_blacks:
-                print("The bot won!")
+                print("AI won!")
             elif no_of_whites < no_of_blacks:
                 print("You won!")
             elif no_of_whites == no_of_blacks:
                 print("Tie!")
 
-            print(f"Final score: \nBlack = {no_of_blacks} - White = {no_of_whites}")
+            print(f"Final score: \nBlack {no_of_blacks} - {no_of_whites} White")
             return True
-        else:
-            # The game is done before the table is complete
-            whites, blacks = 0, 0
-            for i in range(8):
-                for j in range(8):
-                    if self.board[i, j] == 1:
-                        whites += 1
-                    elif self.board[i, j] == -1:
-                        blacks += 1
-
-            if whites + blacks == abs(whites - blacks):
-                if whites != 0:
-                    print("The bot won!")
-                    print(f"Final score: \nBlack = {blacks} - White = {whites}")
-                else:
-                    print("You won!")
-                    print(f"Final score: \nBlack = {blacks} - White = {whites}")
-
-                return True
-
+        elif no_of_blacks == 0 or no_of_whites == 0:
+            if no_of_blacks == 0:
+                print("AI won!")
+            else:
+                print("You won!")
+            print(f"Final score: \nBlack {no_of_blacks} - {no_of_whites} White")
+            return True
+        elif len(self.generate_possible_moves(1, self.board, False)) == 0 and len(self.generate_possible_moves(-1, self.board, False)) == 0:
+            if no_of_whites > no_of_blacks:
+                print("AI won!")
+            elif no_of_whites < no_of_blacks:
+                print("You won!")
+            elif no_of_whites == no_of_blacks:
+                print("Tie!")
+            print(f"Final score: \nBlack {no_of_blacks} - {no_of_whites} White")
+            return True
+        
         return False
 
     # Used to check on horizontal line for possible places
@@ -335,8 +338,10 @@ class Board:
                 if self.board[i, j] == color:
                     h_l = self.horizontal_line(i, j, opposite_color, value)
                     v_l = self.vertical_line(i, j, opposite_color, value)
-                    p_l = self.principal_diagonal_line(i, j, opposite_color, value)
-                    s_l = self.secondary_diagonal_line(i, j, opposite_color, value)
+                    p_l = self.principal_diagonal_line(
+                        i, j, opposite_color, value)
+                    s_l = self.secondary_diagonal_line(
+                        i, j, opposite_color, value)
 
                     if len(h_l) > 0:
                         for item in h_l:
@@ -566,7 +571,8 @@ class Board:
             return True
 
     def best_move_random_pick(self):
-        possible_moves = list(self.generate_possible_moves(1, self.board, True))
+        possible_moves = list(
+            self.generate_possible_moves(1, self.board, True))
         temp_moves = []
         # 1.
         for move in possible_moves:
@@ -613,93 +619,93 @@ class Board:
         self.set_move(x, y, 1)
         return x, y
 
-    # ---------------- LOCAL MAXIMIZATION -------------------------------------
+    # # ---------------- LOCAL MAXIMIZATION -------------------------------------
 
-    # Returns the number of white and black pieces
-    def count_pieces(self):
-        return np.count_nonzero(self.board == 1), np.count_nonzero(self.board == 1)
+    # # Returns the number of white and black pieces
+    # def count_pieces(self):
+    #     return np.count_nonzero(self.board == 1), np.count_nonzero(self.board == 1)
 
-    # Takes decisions for computer, every move has a certain reward
-    def local_maximization_strategy(self, current_player=1):
-        possible_moves = list(self.generate_possible_moves(current_player, self.board, True))
-        rewards = list()
-        backup_board = copy.deepcopy(self.board)
+    # # Takes decisions for computer, every move has a certain reward
+    # def local_maximization_strategy(self, current_player=1):
+    #     possible_moves = list(self.generate_possible_moves(current_player, self.board, True))
+    #     rewards = list()
+    #     backup_board = copy.deepcopy(self.board)
 
-        for position in possible_moves:
-            self.set_move(position[0], position[1], current_player)
-            no_of_whites, no_of_blacks = self.count_pieces()
+    #     for position in possible_moves:
+    #         self.set_move(position[0], position[1], current_player)
+    #         no_of_whites, no_of_blacks = self.count_pieces()
 
-            if current_player == 1:
-                rewards.append(no_of_whites)
-            else:
-                rewards.append(no_of_blacks)
+    #         if current_player == 1:
+    #             rewards.append(no_of_whites)
+    #         else:
+    #             rewards.append(no_of_blacks)
 
-            self.board = copy.deepcopy(backup_board)
+    #         self.board = copy.deepcopy(backup_board)
 
-        if len(rewards) > 0:
-            best_move = possible_moves[np.argmax(rewards)]
-            self.set_move(best_move[0], best_move[1], current_player)
-            return best_move
+    #     if len(rewards) > 0:
+    #         best_move = possible_moves[np.argmax(rewards)]
+    #         self.set_move(best_move[0], best_move[1], current_player)
+    #         return best_move
 
-        return None
+    #     return None
 
-    # ---------------- GENERAL MAXIMIZATION -------------------------------
+    # # ---------------- GENERAL MAXIMIZATION -------------------------------
 
-    def maximization_strategy(self, current_player=1):
-        backup_board1 = copy.deepcopy(self.board)
-        possible_moves1 = list(self.generate_possible_moves(current_player, self.board, True))
-        rewards = dict()
-        history = dict()
+    # def maximization_strategy(self, current_player=1):
+    #     backup_board1 = copy.deepcopy(self.board)
+    #     possible_moves1 = list(self.generate_possible_moves(current_player, self.board, True))
+    #     rewards = dict()
+    #     history = dict()
 
-        for i, p1 in enumerate(possible_moves1):
-            self.set_move(p1[0], p1[1], current_player)
-            backup_board2 = copy.deepcopy(self.board)
+    #     for i, p1 in enumerate(possible_moves1):
+    #         self.set_move(p1[0], p1[1], current_player)
+    #         backup_board2 = copy.deepcopy(self.board)
 
-            if current_player == 1:
-                next_player = 0
-            else:
-                next_player = 1
+    #         if current_player == 1:
+    #             next_player = 0
+    #         else:
+    #             next_player = 1
 
-            possible_moves2 = list(self.generate_possible_moves(next_player, self.board, True))
+    #         possible_moves2 = list(self.generate_possible_moves(next_player, self.board, True))
 
-            for j, p2 in enumerate(possible_moves2):
-                self.set_move(p2[0], p2[1], current_player)
-                no_of_whites, no_of_blacks = self.count_pieces()
+    #         for j, p2 in enumerate(possible_moves2):
+    #             self.set_move(p2[0], p2[1], current_player)
+    #             no_of_whites, no_of_blacks = self.count_pieces()
 
-                key = str(i) + ':' + str(j)
+    #             key = str(i) + ':' + str(j)
 
-                if current_player == 1:
-                    rewards.update({key: no_of_whites})
-                else:
-                    rewards.update({key: no_of_blacks})
+    #             if current_player == 1:
+    #                 rewards.update({key: no_of_whites})
+    #             else:
+    #                 rewards.update({key: no_of_blacks})
 
-                history.update({key: (p1, p2)})
+    #             history.update({key: (p1, p2)})
 
-                self.board = copy.deepcopy(backup_board2)
+    #             self.board = copy.deepcopy(backup_board2)
 
-            self.board = copy.deepcopy(backup_board1)
+    #         self.board = copy.deepcopy(backup_board1)
 
-        final_decisions = list()
-        max_reward = -1
+    #     final_decisions = list()
+    #     max_reward = -1
 
-        if len(rewards) > 0 and len(history) > 0:
-            for r in rewards:
-                v = rewards.get(r)
-                if v > max_reward:
-                    final_decisions = [[r, v]]
-                    max_reward = v
-                elif v == max_reward:
-                    final_decisions.append([r, v])
+    #     if len(rewards) > 0 and len(history) > 0:
+    #         for r in rewards:
+    #             v = rewards.get(r)
+    #             if v > max_reward:
+    #                 final_decisions = [[r, v]]
+    #                 max_reward = v
+    #             elif v == max_reward:
+    #                 final_decisions.append([r, v])
 
-            np.random.shuffle(final_decisions)
+    #         np.random.shuffle(final_decisions)
 
-            decision = final_decisions[0]
-            best_move = history.get(decision[0])[0]
+    #         decision = final_decisions[0]
+    #         best_move = history.get(decision[0])[0]
 
-            self.set_move(best_move[0], best_move[1], current_player)
-            return best_move
+    #         self.set_move(best_move[0], best_move[1], current_player)
+    #         return best_move
 
-        return None
+    #     return None
 
     # ---------------------- MINI MAX -------------------------------------------
 
@@ -893,22 +899,28 @@ class Board:
 
         if maximized_level is True:
             value = -float('Inf')
-            possible_states = self.generate_possible_moves(1, current_state, True)
+            possible_states = self.generate_possible_moves(
+                1, current_state, True)
             for i in possible_states:
                 copy_of_current_state = copy.deepcopy(current_state)
-                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], 1)
-                _, new_val = self.mini_max(new_state, False, current_depth - 1, best_one)
+                new_state = self.set_state_move(
+                    copy_of_current_state, i[0], i[1], 1)
+                _, new_val = self.mini_max(
+                    new_state, False, current_depth - 1, best_one)
                 if new_val > value:
                     value = new_val
                     best_one = new_state
             return best_one, value
         else:
             value = float('Inf')
-            possible_states = self.generate_possible_moves(-1, current_state, True)
+            possible_states = self.generate_possible_moves(
+                -1, current_state, True)
             for i in possible_states:
                 copy_of_current_state = copy.deepcopy(current_state)
-                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], -1)
-                _, new_val = self.mini_max(new_state, True, current_depth - 1, best_one)
+                new_state = self.set_state_move(
+                    copy_of_current_state, i[0], i[1], -1)
+                _, new_val = self.mini_max(
+                    new_state, True, current_depth - 1, best_one)
                 if new_val < value:
                     value = new_val
                     best_one = new_state
@@ -945,11 +957,14 @@ class Board:
 
         if maximized_level is True:
             value = -np.Inf
-            possible_states = self.generate_possible_moves(1, current_state, True)
+            possible_states = self.generate_possible_moves(
+                1, current_state, True)
             for i in possible_states:
                 copy_of_current_state = copy.deepcopy(current_state)
-                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], 1)
-                _, new_val = self.alpha_beta(new_state, False, current_depth - 1, alpha, beta, best_one)
+                new_state = self.set_state_move(
+                    copy_of_current_state, i[0], i[1], 1)
+                _, new_val = self.alpha_beta(
+                    new_state, False, current_depth - 1, alpha, beta, best_one)
                 if new_val > value:
                     value = new_val
                     best_one = new_state
@@ -960,11 +975,14 @@ class Board:
             return best_one, value
         else:
             value = np.Inf
-            possible_states = self.generate_possible_moves(-1, current_state, True)
+            possible_states = self.generate_possible_moves(
+                -1, current_state, True)
             for i in possible_states:
                 copy_of_current_state = copy.deepcopy(current_state)
-                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], -1)
-                _, new_val = self.alpha_beta(new_state, True, current_depth - 1, alpha, beta, best_one)
+                new_state = self.set_state_move(
+                    copy_of_current_state, i[0], i[1], -1)
+                _, new_val = self.alpha_beta(
+                    new_state, True, current_depth - 1, alpha, beta, best_one)
                 if new_val < value:
                     value = new_val
                     best_one = new_state
@@ -976,7 +994,11 @@ class Board:
 
     # Function to call the mini max algorithm
     def alpha_beta_strategy(self):
-        best_state, value = self.alpha_beta(self.board, True, 1, -np.Inf, np.Inf, None)
+        if len(self.generate_possible_moves(1,self.board,True)) == 0:
+            return None
+        best_state, value = self.alpha_beta(
+            self.board, True, 4, -np.Inf, np.Inf, None)
+
         if best_state is None:
             for i in range(8):
                 for j in range(8):
@@ -988,52 +1010,12 @@ class Board:
             self.board = best_state
             return last_position
 
-    # -----------------------------NEGAMAX-------------------------------------
-    def negamax(self, current_state, current_depth, color, best_one):
-        if current_depth == 0 or self.final_state(current_state) is True:
-            return None, self.heuristic_function(current_state)
-        if color == 1:
-            value = -np.Inf
-            possible_states = self.generate_possible_moves(1, current_state, True)
-            for i in possible_states:
-                copy_of_current_state = copy.deepcopy(current_state)
-                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], 1)
-                _, new_val = self.negamax(new_state, current_depth - 1, -1, best_one)
-                if -new_val > value:
-                    value = new_val
-                    best_one = new_state
-
-            return best_one, value
-        elif color == -1:
-            value = -np.Inf
-            possible_states = self.generate_possible_moves(-1, current_state, True)
-            for i in possible_states:
-                copy_of_current_state = copy.deepcopy(current_state)
-                new_state = self.set_state_move(copy_of_current_state, i[0], i[1], -1)
-                _, new_val = self.negamax(new_state, current_depth - 1, 1, best_one)
-                if -new_val > value:
-                    value = new_val
-                    best_one = new_state
-
-            return best_one, value
-
-    def negamax_strategy(self):
-        best_state, value = self.negamax(self.board, 1, 1, None)
-        if best_state is None:
-            for i in range(8):
-                for j in range(8):
-                    if self.board[i, j] == 0:
-                        self.board[i, j] = 1
-                        break
-        else:
-            last_position = self.compare_states(best_state)
-            self.board = best_state
-            return last_position
 
     # --------------------------- DEBUG ---------------------------------------
 
     def print_matrix(self):
         for i in range(8):
             for j in range(8):
-                print('[({}, {}) {}] '.format(i, j, self.board[i, j], ), end='')
+                print('[({}, {}) {}] '.format(
+                    i, j, self.board[i, j], ), end='')
             print()
